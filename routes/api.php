@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\api\AuthApiController;
+use App\Http\Controllers\api\PostApiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
@@ -20,16 +22,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register', [AuthController::class, 'signUp']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthApiController::class, 'register'])->name('api.register');
+Route::post('/login', [AuthApiController::class, 'login'])->name('api.login');
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
 // private post routes
-    Route::get('/posts/list', [PostController::class, 'list']);
-    Route::post('/posts', [PostController::class, 'store']);
-    Route::put('/posts/{id}', [PostController::class, 'update']);
-    Route::delete('/posts/{id}', [PostController::class, 'destroy']);
+    Route::get('/posts/list', [PostApiController::class, 'list']);
+    Route::get('/users/{userId}/posts', [PostApiController::class, 'getByUserId']);
+    Route::post('/posts', [PostApiController::class, 'store']);
+    Route::put('/posts/{id}', [PostApiController::class, 'update']);
+    Route::delete('/posts/{id}', [PostApiController::class, 'destroy']);
 
 // logout
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthApiController::class, 'logout']);
 });
